@@ -163,7 +163,8 @@ const oppScore = useMemo(() => {
           >
             {clockRunning ? "Pause clock" : "Start clock"}
           </button>
-
+<button onClick={goHalfTime}>Half-time</button>
+<button onClick={goFullTime}>Full-time</button>
           <button
             onClick={undoLast}
             style={{ padding: "10px 12px", borderRadius: 12, border: "1px solid #333" }}
