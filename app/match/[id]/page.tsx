@@ -18,6 +18,15 @@ export default function LivePage() {
 
   const [match, setMatch] = useState<Match | null>(null);
   const halfSeconds = (match?.halfMinutes ?? 30) * 60;
+  function goHalfTime() {
+  setClockSeconds(halfSeconds);
+  setIsRunning(false);
+}
+
+function goFullTime() {
+  setClockSeconds(halfSeconds * 2);
+  setIsRunning(false);
+}
 
   const [activeEvent, setActiveEvent] = useState<EventType | null>(null);
   const [activeTeam, setActiveTeam] = useState<EventTeam>("BALLA");
