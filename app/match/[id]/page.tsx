@@ -25,7 +25,7 @@ setClockRunning(false);
 
 function goFullTime() {
   setClockSeconds(halfSeconds * 2);
-  setIsRunning(false);
+setClockRunning(false);
 }
 
   const [activeEvent, setActiveEvent] = useState<EventType | null>(null);
