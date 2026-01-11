@@ -57,12 +57,17 @@ const next: Match = {
           </div>
         </div>
 
-        <Link
-          href={`/match/${match.id}`}
-          style={{ textDecoration: "none", padding: "10px 12px", border: "1px solid #333", borderRadius: 12 }}
-        >
-          Go Live
-        </Link>
+<Link
+  href={`/match/${match.id}`}
+  onClick={() => {
+    const next: Match = { ...match, maxNumber, halfMinutes };
+    setMatch(next);
+    upsertMatch(next);
+  }}
+  style={{ textDecoration: "none", padding: "10px 12px", border: "1px solid #333" }}
+>
+  Go Live
+</Link>
       </div>
 
       <div style={{ marginTop: 12, padding: 12, border: "1px solid #ddd", borderRadius: 12 }}>
