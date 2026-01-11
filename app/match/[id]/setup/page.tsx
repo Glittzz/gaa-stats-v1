@@ -30,7 +30,6 @@ export default function SetupPage() {
 const next: Match = {
   ...match,
   panel: { ...match.panel, [n]: name },
-  maxNumber,
   halfMinutes,
 };
     setMatch(next);
