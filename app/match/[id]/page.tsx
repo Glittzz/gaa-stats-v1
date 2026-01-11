@@ -198,7 +198,7 @@ return scoreFromEvents(match);
         {score && (
           <div style={{ padding: "8px 10px", border: "1px solid #ddd", borderRadius: 10 }}>
             <strong>Score:</strong>{" "}
-            Balla {score.ballaGoals}-{score.ballaPoints} | Opp {score.oppGoals}-{score.oppPoints}
+Balla {score.goals}-{score.points} | Opp {score.oppGoals}-{score.oppPoints}
           </div>
         )}
       </div>
