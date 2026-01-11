@@ -116,7 +116,7 @@ return scoreFromEvents({ ...match, events: match.events.filter((e) => e.team ===
 
 const oppScore = useMemo(() => {
   if (!match) return null;
-  return scoreFromEvents(match.events.filter((e) => e.team === "OPP"));
+return scoreFromEvents({ ...match, events: match.events.filter((e) => e.team === "OPP") });
 }, [match]);
 
   // Build an event list safely from EVENT_GROUPS / EVENT_LABELS
