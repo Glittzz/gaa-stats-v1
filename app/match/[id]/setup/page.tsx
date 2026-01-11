@@ -20,7 +20,6 @@ export default function SetupPage() {
   setMatch(m);
 
   // pull saved settings into local state
-  setMaxNumber(m.maxNumber ?? 25);
   setHalfMinutes(m.halfMinutes ?? 30);
 }, [id]);
 
