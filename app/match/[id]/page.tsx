@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-7  import { EVENT_GROUPS, EVENT_LABELS } from "../../../lib/events";
-8  import { uid } from "../../../lib/id";
-9  import { getMatch, upsertMatch } from "../../../lib/storage";
-10 import type { EventTeam, EventType, Match, MatchEvent } from "../../../lib/types";
-11 import { formatClock, scoreFromEvents } from "../../../lib/stats";
+import { EVENT_GROUPS, EVENT_LABELS } from "../../../lib/events";
+import { uid } from "../../../lib/id";
+import { getMatch, upsertMatch } from "../../../lib/storage";
+import type { EventTeam, EventType, Match, MatchEvent } from "../../../lib/types";
+import { formatClock, scoreFromEvents } from "../../../lib/stats";
 
 const DEFAULT_MAX_NUMBER = 25;
 
