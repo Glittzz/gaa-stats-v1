@@ -24,7 +24,12 @@ export default function SetupPage() {
 
   function setName(n: number, name: string) {
     if (!match) return;
-    const next: Match = { ...match, panel: { ...match.panel, [n]: name } };
+const next: Match = {
+  ...match,
+  panel: { ...match.panel, [n]: name },
+  maxNumber,
+  halfMinutes,
+};
     setMatch(next);
     upsertMatch(next);
   }
