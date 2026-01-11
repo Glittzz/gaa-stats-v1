@@ -12,6 +12,7 @@ export default function SetupPage() {
 
   const [match, setMatch] = useState<Match | null>(null);
   const [maxNumber, setMaxNumber] = useState(25);
+  const [halfMinutes, setHalfMinutes] = useState(30);
 
   useEffect(() => {
     const m = getMatch(id);
