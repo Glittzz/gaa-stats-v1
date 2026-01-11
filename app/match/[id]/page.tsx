@@ -59,7 +59,7 @@ setMatch(m ?? null);
       type: activeEvent,
       team: activeTeam,
       playerNumber,
-      timestamp: clockSeconds,
+clockSeconds: clockSeconds,
     };
 
     const updated: Match = {
