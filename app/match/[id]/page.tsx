@@ -101,7 +101,7 @@ export default function LivePage() {
 
   const score = useMemo(() => {
     if (!match) return null;
-    return scoreFromEvents(match.events);
+return scoreFromEvents(match);
   }, [match]);
 
   // Build an event list safely from EVENT_GROUPS / EVENT_LABELS
