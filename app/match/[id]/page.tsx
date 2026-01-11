@@ -99,10 +99,15 @@ export default function LivePage() {
     upsertMatch(updated);
   }
 
-  const score = useMemo(() => {
-    if (!match) return null;
-return scoreFromEvents(match);
-  }, [match]);
+const ballaScore = useMemo(() => {
+  if (!match) return null;
+  return scoreFromEvents(match.events.filter((e) => e.team === "BALLA"));
+}, [match]);
+
+const oppScore = useMemo(() => {
+  if (!match) return null;
+  return scoreFromEvents(match.events.filter((e) => e.team === "OPP"));
+}, [match]);
 
   // Build an event list safely from EVENT_GROUPS / EVENT_LABELS
   const groupedEventTypes: Array<{ title: string; types: EventType[] }> = useMemo(() => {
