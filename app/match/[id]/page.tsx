@@ -17,6 +17,7 @@ export default function LivePage() {
   const id = params.id;
 
   const [match, setMatch] = useState<Match | null>(null);
+  const halfSeconds = (match?.halfMinutes ?? 30) * 60;
 
   const [activeEvent, setActiveEvent] = useState<EventType | null>(null);
   const [activeTeam, setActiveTeam] = useState<EventTeam>("BALLA");
