@@ -20,7 +20,7 @@ export default function LivePage() {
   const halfSeconds = (match?.halfMinutes ?? 30) * 60;
   function goHalfTime() {
   setClockSeconds(halfSeconds);
-  setIsRunning(false);
+setClockRunning(false);    
 }
 
 function goFullTime() {
