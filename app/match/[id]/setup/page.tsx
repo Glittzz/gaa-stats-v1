@@ -37,7 +37,13 @@ const next: Match = {
     setMatch(next);
     upsertMatch(next);
   }
-
+function setHalf(n: number) {
+  if (!match) return;
+  const next: Match = { ...match, halfMinutes: n };
+  setMatch(next);
+  setHalfMinutes(n);
+  upsertMatch(next);
+}
   if (!match) {
     return (
       <div>
