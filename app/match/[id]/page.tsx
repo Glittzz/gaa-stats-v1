@@ -211,12 +211,14 @@ return scoreFromEvents({ ...match, events: match.events.filter((e) => e.team ===
           </button>
         </div>
 
-        {score && (
-          <div style={{ padding: "8px 10px", border: "1px solid #ddd", borderRadius: 10 }}>
-            <strong>Score:</strong>{" "}
-Balla {score.goals}-{score.points} ({score.twoPoints}x2)
-          </div>
-        )}
+       {ballaScore && oppScore && (
+  <div style={{ padding: "8px 10px", border: "1px solid #ddd", borderRadius: 10 }}>
+    <strong>Score:</strong>{" "}
+    Balla {ballaScore.goals}-{ballaScore.points} ({ballaScore.twoPoints}x2)
+    {" "}vs{" "}
+    Opp {oppScore.goals}-{oppScore.points} ({oppScore.twoPoints}x2)
+  </div>
+)}
       </div>
 
       {/* Event selection */}
