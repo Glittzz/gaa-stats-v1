@@ -27,7 +27,7 @@ export default function LivePage() {
 
   useEffect(() => {
     const m = getMatch(id);
-    setMatch(m);
+setMatch(m ?? null);
   }, [id]);
 
   useEffect(() => {
