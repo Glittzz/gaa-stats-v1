@@ -37,6 +37,7 @@ export type Match = {
   side: Side; // are we home or away?
   matchDateISO: string; // YYYY-MM-DD
   // jersey number -> optional name
+  halfMinutes: number; // 30 or 35
   panel: Record<number, string>;
   events: MatchEvent[];
 };
