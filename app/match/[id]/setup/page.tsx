@@ -91,6 +91,20 @@ function setHalf(n: number) {
             ))}
           </select>
         </label>
+        <div style={{ marginTop: 12 }}>
+  <label>
+    Half length (minutes)
+    <select
+      value={halfMinutes}
+      onChange={(e) => setHalf(Number(e.target.value))}
+      style={{ width: "100%", padding: 10, borderRadius: 10, border: "1px solid #ccc", marginTop: 6 }}
+    >
+      {[30, 35].map((n) => (
+        <option key={n} value={n}>{n}</option>
+      ))}
+    </select>
+  </label>
+</div>
         <p style={{ marginBottom: 0, opacity: 0.8 }}>
           Names are optional. If you leave them blank, the app still records stats by number.
         </p>
