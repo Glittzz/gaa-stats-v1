@@ -29,6 +29,7 @@ export default function HomePage() {
       venue: venue.trim() || "—",
       side,
       matchDateISO: dateISO,
+halfMinutes: 30, 
       panel: {},
       events: [],
     };
