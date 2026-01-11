@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { EVENT_GROUPS, EVENT_LABELS } from "../../../lib/events";
 import { uid } from "../../../lib/id";
 import { getMatch, upsertMatch } from "../../../lib/storage";
@@ -18,6 +19,7 @@ export default function LivePage() {
   const [match, setMatch] = useState<Match | null>(null);
   const [activeEvent, setActiveEvent] = useState<EventType | null>(null);
   const [activeTeam, setActiveTeam] = useState<EventTeam>("BALLA");
+
   const [clockSeconds, setClockSeconds] = useState(0);
   const [clockRunning, setClockRunning] = useState(true);
 
@@ -25,66 +27,20 @@ export default function LivePage() {
 
   useEffect(() => {
     const m = getMatch(id);
-    if (!m) return;
     setMatch(m);
   }, [id]);
 
   useEffect(() => {
     if (!clockRunning) return;
-    tickRef.current = window.setInterval(() => setClockSeconds((s) => s + 1), 1000);
+
+    tickRef.current = window.setInterval(() => {
+      setClockSeconds((s) => s + 1);
+    }, 1000);
+
     return () => {
       if (tickRef.current) window.clearInterval(tickRef.current);
-      tickRef.current = null;
     };
   }, [clockRunning]);
-
-  const maxNumber = useMemo(() => {
-    if (!match) return DEFAULT_MAX_NUMBER;
-    const nums = Object.keys(match.panel || {})
-      .map((n) => Number(n))
-      .filter((n) => !Number.isNaN(n));
-    const m = nums.length ? Math.max(...nums) : DEFAULT_MAX_NUMBER;
-    return Math.max(m, 15);
-  }, [match]);
-
-  const numbers = useMemo(() => Array.from({ length: maxNumber }, (_, i) => i + 1), [maxNumber]);
-
-  const score = useMemo(
-    () => (match ? scoreFromEvents(match) : { goals: 0, points: 0, twoPoints: 0, totalPoints: 0 }),
-    [match]
-  );
-
-  function persist(next: Match) {
-    setMatch(next);
-    upsertMatch(next);
-  }
-
-  function addEvent(playerNumber?: number) {
-    if (!match || !activeEvent) return;
-
-    const ev: MatchEvent = {
-      id: uid("ev"),
-      matchId: match.id,
-      ts: Date.now(),
-      clockSeconds,
-      team: activeTeam,
-      type: activeEvent,
-      playerNumber,
-    };
-
-    const next: Match = { ...match, events: [ev, ...match.events] };
-    persist(next);
-  }
-
-  function undoLast() {
-    if (!match || match.events.length === 0) return;
-    const next: Match = { ...match, events: match.events.slice(1) };
-    persist(next);
-  }
-
-  function clearSticky() {
-    setActiveEvent(null);
-  }
 
   if (!match) {
     return (
@@ -95,106 +51,83 @@ export default function LivePage() {
     );
   }
 
+  function logEvent(playerNumber: number) {
+    if (!activeEvent) return;
+
+    const ev: MatchEvent = {
+      id: uid(),
+      type: activeEvent,
+      team: activeTeam,
+      playerNumber,
+      timestamp: clockSeconds,
+    };
+
+    const updated: Match = {
+      ...match,
+      events: [...match.events, ev],
+    };
+
+    setMatch(updated);
+    upsertMatch(updated);
+  }
+
+  const score = scoreFromEvents(match.events);
+
   return (
-    <div>
+    <div style={{ padding: 12, display: "grid", gap: 12 }}>
+      <h1>
+        Live: Balla vs {match.opponent}
+      </h1>
+
+      <div>
+        <strong>Clock:</strong> {formatClock(clockSeconds)}{" "}
+        <button onClick={() => setClockRunning((v) => !v)}>
+          {clockRunning ? "Pause" : "Resume"}
+        </button>
+      </div>
+
+      <div>
+        <strong>Score:</strong> Balla {score.balla} – {score.opponent}{" "}
+        {match.opponent}
+      </div>
+
       <div style={{ display: "grid", gap: 8 }}>
-        <h1 style={{ margin: 0 }}>Live: Balla vs {match.opponent}</h1>
-
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-          <div style={{ padding: "8px 10px", border: "1px solid #ddd", borderRadius: 12 }}>
-            <strong>Clock:</strong> {formatClock(clockSeconds)}
+        {EVENT_GROUPS.map((group) => (
+          <div key={group.label}>
+            <strong>{group.label}</strong>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {group.events.map((ev) => (
+                <button
+                  key={ev}
+                  onClick={() => setActiveEvent(ev)}
+                  style={{
+                    background:
+                      activeEvent === ev ? "#333" : "#eee",
+                    color: activeEvent === ev ? "#fff" : "#000",
+                  }}
+                >
+                  {EVENT_LABELS[ev]}
+                </button>
+              ))}
+            </div>
           </div>
+        ))}
+      </div>
 
-          <button
-            onClick={() => setClockRunning((v) => !v)}
-            style={{ padding: "10px 12px", borderRadius: 12, border: "1px solid #333", background: "white" }}
-          >
-            {clockRunning ? "Pause" : "Resume"}
-          </button>
-
-          <div style={{ padding: "8px 10px", border: "1px solid #ddd", borderRadius: 12 }}>
-            <strong>Score (Balla):</strong> {score.goals}-{score.points} (2pt: {score.twoPoints}) ({score.totalPoints})
-          </div>
-
-          <Link
-            href={`/match/${match.id}/summary`}
-            style={{ textDecoration: "none", padding: "10px 12px", border: "1px solid #333", borderRadius: 12 }}
-          >
-            Summary
-          </Link>
-
-          <Link
-            href={`/match/${match.id}/setup`}
-            style={{ textDecoration: "none", padding: "10px 12px", border: "1px solid #333", borderRadius: 12 }}
-          >
-            Panel
-          </Link>
-
-          <Link href="/" style={{ textDecoration: "none", padding: "10px 12px", border: "1px solid #333", borderRadius: 12 }}>
-            Home
-          </Link>
+      <div>
+        <strong>Player:</strong>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+          {Array.from({ length: DEFAULT_MAX_NUMBER }, (_, i) => i + 1).map(
+            (n) => (
+              <button key={n} onClick={() => logEvent(n)}>
+                {n}
+              </button>
+            )
+          )}
         </div>
+      </div>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-          <div style={{ fontWeight: 800 }}>Active:</div>
-          <div style={{ padding: "8px 10px", border: "1px solid #ddd", borderRadius: 12 }}>
-            {activeEvent ? EVENT_LABELS[activeEvent] : "—"}
-          </div>
-
-          <button
-            onClick={clearSticky}
-            disabled={!activeEvent}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid #333",
-              background: activeEvent ? "white" : "#eee",
-              opacity: activeEvent ? 1 : 0.6,
-            }}
-          >
-            Clear
-          </button>
-
-          <button
-            onClick={undoLast}
-            disabled={match.events.length === 0}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid #333",
-              background: match.events.length ? "white" : "#eee",
-              opacity: match.events.length ? 1 : 0.6,
-              fontWeight: 800,
-            }}
-          >
-            Undo Last
-          </button>
-
-          <div style={{ marginLeft: "auto", display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button
-              onClick={() => setActiveTeam("BALLA")}
-              style={{
-                padding: "10px 12px",
-                borderRadius: 12,
-                border: "1px solid #333",
-                background: activeTeam === "BALLA" ? "#111" : "white",
-                color: activeTeam === "BALLA" ? "white" : "black",
-                fontWeight: 800,
-              }}
-            >
-              Balla
-            </button>
-            <button
-              onClick={() => setActiveTeam("OPP")}
-              style={{
-                padding: "10px 12px",
-                borderRadius: 12,
-                border: "1px solid #333",
-                background: activeTeam === "OPP" ? "#111" : "white",
-                color: activeTeam === "OPP" ? "white" : "black",
-                fontWeight: 800,
-              }}
-            >
-              Opp
-            </button>
-          </div>
+      <Link href={`/match/${id}/setup`}>Match setup</Link>
+    </div>
+  );
+}
