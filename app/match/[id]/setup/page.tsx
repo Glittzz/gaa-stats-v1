@@ -64,7 +64,7 @@ function setHalf(n: number) {
 <Link
   href={`/match/${match.id}`}
   onClick={() => {
-    const next: Match = { ...match, maxNumber, halfMinutes };
+const next: Match = { ...match, halfMinutes };
     setMatch(next);
     upsertMatch(next);
   }}
