@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getMatch, upsertMatch } from "../../../../lib/storage";
-import { Match } from "../../../../../lib/types";
+import { Match } from "../../../../lib/types";
 
 export default function SetupPage() {
   const params = useParams<{ id: string }>();
