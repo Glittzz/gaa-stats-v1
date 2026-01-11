@@ -15,10 +15,14 @@ export default function SetupPage() {
   const [halfMinutes, setHalfMinutes] = useState(30);
 
   useEffect(() => {
-    const m = getMatch(id);
-    if (!m) return;
-    setMatch(m);
-  }, [id]);
+  const m = getMatch(id);
+  if (!m) return;
+  setMatch(m);
+
+  // pull saved settings into local state
+  setMaxNumber(m.maxNumber ?? 25);
+  setHalfMinutes(m.halfMinutes ?? 30);
+}, [id]);
 
   const numbers = useMemo(() => Array.from({ length: maxNumber }, (_, i) => i + 1), [maxNumber]);
 
