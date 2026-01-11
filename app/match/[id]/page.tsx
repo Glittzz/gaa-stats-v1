@@ -111,7 +111,7 @@ setClockRunning(false);
 
 const ballaScore = useMemo(() => {
   if (!match) return null;
-return scoreFromEvents(match);
+return scoreFromEvents({ ...match, events: match.events.filter((e) => e.team === "BALLA") });
 }, [match]);
 
 const oppScore = useMemo(() => {
